@@ -1,0 +1,325 @@
+/* ==========================================================================
+   AI ディープフェイク詐欺デモ — スタイル
+   ========================================================================== */
+
+:root {
+  --navy: #103060;
+  --navy-light: #1a4080;
+  --red: #c04030;
+  --red-hover: #a03020;
+  --green: #1d9e75;
+  --gray-bg: #f4f6f8;
+  --gray-border: #d0d5dd;
+  --gray-text: #667085;
+  --white: #ffffff;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  background: var(--gray-bg);
+  color: #1a1a2e;
+  line-height: 1.6;
+}
+
+/* --- Header --- */
+.header {
+  background: var(--navy);
+  color: var(--white);
+  text-align: center;
+  padding: 2rem 1rem;
+}
+.header h1 {
+  font-size: 1.8rem;
+  margin-top: 0.5rem;
+}
+.header .subtitle {
+  color: #a0b4cc;
+  margin-top: 0.25rem;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--red);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.8rem;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* --- Container --- */
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* --- Step sections --- */
+.step {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition: opacity 0.3s;
+}
+.step.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.step h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.step-desc {
+  color: var(--gray-text);
+  margin-bottom: 1.5rem;
+}
+
+/* --- Form --- */
+.form-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--gray-border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* File drop zone */
+.file-drop {
+  border: 2px dashed var(--gray-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+.file-drop:hover,
+.file-drop.dragover {
+  border-color: var(--navy);
+  background: #eef2f8;
+}
+.file-drop-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gray-text);
+}
+.file-drop-icon {
+  font-size: 2rem;
+}
+.preview-img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* --- Registered person chip --- */
+.registered-person {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #eef7f3;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+.thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.tag {
+  display: inline-block;
+  background: var(--green);
+  color: var(--white);
+  font-size: 0.7rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  margin-left: 0.5rem;
+}
+
+/* --- Textarea --- */
+textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--gray-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  width: 100%;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--navy);
+  color: var(--white);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--navy-light);
+}
+.btn-danger {
+  background: var(--red);
+  color: var(--white);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--red-hover);
+}
+
+/* --- Status messages --- */
+.status {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  min-height: 1.4em;
+}
+.status.loading {
+  color: var(--navy);
+}
+.status.success {
+  color: var(--green);
+}
+.status.error {
+  color: var(--red);
+}
+
+/* --- Progress --- */
+.progress-area {
+  margin-bottom: 1.5rem;
+}
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e0e4ea;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--navy);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  text-align: center;
+  color: var(--gray-text);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* --- Video area --- */
+.video-area {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.video-area video {
+  width: 100%;
+  max-width: 480px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* --- Warning banner --- */
+.warning-banner {
+  background: #fef2f2;
+  border: 2px solid var(--red);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  animation: fadeInUp 0.6s ease;
+}
+.warning-banner p:first-child {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--red);
+}
+.warning-sub {
+  color: var(--gray-text);
+  margin-top: 0.25rem;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Footer --- */
+.footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--gray-text);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--gray-border);
+  max-width: 720px;
+  margin: 0 auto;
+}
+.footer-org {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  color: var(--navy);
+}

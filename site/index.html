@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI ディープフェイク詐欺デモ — 教育用</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="header">
+    <span class="badge">教育用デモ</span>
+    <h1>AI ディープフェイク 体験デモ</h1>
+    <p class="subtitle">写真と声から、AIがフェイク動画を生成します</p>
+  </header>
+
+  <main class="container">
+    <!-- ===== Step 1: 人物登録 ===== -->
+    <section class="step" id="step1">
+      <h2><span class="step-num">1</span> 人物を登録する</h2>
+      <p class="step-desc">顔写真と音声サンプルをアップロードしてください</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="personName">名前</label>
+          <input type="text" id="personName" placeholder="例: 田中太郎" />
+        </div>
+
+        <div class="form-group">
+          <label for="photoInput">顔写真</label>
+          <div class="file-drop" id="photoDrop">
+            <input type="file" id="photoInput" accept="image/*" hidden />
+            <div class="file-drop-content">
+              <span class="file-drop-icon">📷</span>
+              <span>クリックまたはドラッグ＆ドロップ</span>
+            </div>
+            <img id="photoPreview" class="preview-img" hidden />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="audioInput">音声サンプル（1〜2分推奨）</label>
+          <div class="file-drop" id="audioDrop">
+            <input type="file" id="audioInput" accept="audio/*" hidden />
+            <div class="file-drop-content">
+              <span class="file-drop-icon">🎤</span>
+              <span>クリックまたはドラッグ＆ドロップ</span>
+            </div>
+            <audio id="audioPreview" controls hidden></audio>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="registerBtn" disabled>
+        人物を登録する
+      </button>
+      <div class="status" id="registerStatus"></div>
+    </section>
+
+    <!-- ===== Step 2: セリフ入力 ===== -->
+    <section class="step disabled" id="step2">
+      <h2><span class="step-num">2</span> セリフを入力する</h2>
+      <p class="step-desc">この人物に話させたいセリフを入力してください</p>
+
+      <div class="registered-person" id="registeredPerson" hidden>
+        <img id="regPhoto" class="thumb" />
+        <div>
+          <strong id="regName"></strong>
+          <span class="tag">登録済み</span>
+        </div>
+      </div>
+
+      <textarea id="scriptText" rows="5" placeholder="セリフを入力...">お母さん、急いで。
+ちょっとトラブルがあって、
+今日中に50万円振り込んでほしいんだ。
+口座番号送るね。</textarea>
+
+      <button class="btn btn-danger" id="generateBtn" disabled>
+        フェイク動画を生成する
+      </button>
+      <div class="status" id="generateStatus"></div>
+    </section>
+
+    <!-- ===== Step 3: 結果表示 ===== -->
+    <section class="step disabled" id="step3">
+      <h2><span class="step-num">3</span> 生成結果</h2>
+
+      <!-- プログレス -->
+      <div class="progress-area" id="progressArea" hidden>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p class="progress-label" id="progressLabel">準備中...</p>
+      </div>
+
+      <!-- 動画プレイヤー -->
+      <div class="video-area" id="videoArea" hidden>
+        <video id="resultVideo" controls></video>
+      </div>
+
+      <!-- 警告バナー -->
+      <div class="warning-banner" id="warningBanner" hidden>
+        <p>⚠️ これはAIが生成したフェイク映像です</p>
+        <p class="warning-sub">写真1枚と数秒の音声だけで作成されました</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- フッター -->
+  <footer class="footer">
+    <p>
+      本デモは<strong>AIによる詐欺被害の啓発</strong>を目的としています。
+      生成された動画を悪用することは法律で禁じられています。
+    </p>
+    <p class="footer-org">FleGrowth × シブカツ AIワークショップ</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
