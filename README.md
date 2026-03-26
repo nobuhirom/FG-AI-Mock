@@ -20,6 +20,20 @@
 | 音声クローン＋TTS | [ElevenLabs](https://elevenlabs.io) |
 | 写真＋音声→動画合成 | [D-ID](https://www.d-id.com) |
 
+### ElevenLabs TTS モデル一覧
+
+| モデルID | モデル名 | 日本語 | 特徴 |
+|----------|----------|--------|------|
+| **`eleven_v3`** ★現在使用中 | Eleven v3 | ✅ | 最も表現力が高い最新モデル。70言語以上対応 |
+| `eleven_multilingual_v2` | Eleven Multilingual v2 | ✅ | リアルで感情豊かなモデル。29言語対応 |
+| `eleven_flash_v2_5` | Eleven Flash v2.5 | ✅ | 超低遅延モデル。会話向き。32言語対応 |
+| `eleven_turbo_v2_5` | Eleven Turbo v2.5 | ✅ | 高品質＋低遅延バランス型。32言語対応 |
+| `eleven_turbo_v2` | Eleven Turbo v2 | ❌ | 英語のみ。低遅延 |
+| `eleven_flash_v2` | Eleven Flash v2 | ❌ | 英語のみ。超低遅延 |
+| `eleven_monolingual_v1` | Eleven English v1 | ❌ | 初代モデル（旧式） |
+
+> モデルの変更は `server/api.js` の `model_id` を書き換えてください。
+
 ## セットアップ
 
 ### 前提条件

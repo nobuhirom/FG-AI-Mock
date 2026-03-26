@@ -487,21 +487,32 @@ function openHistoryModal(entry) {
   historyEls.modalScript.textContent = entry.scriptText;
   const date = new Date(entry.createdAt);
   historyEls.modalDate.textContent = date.toLocaleString('ja-JP');
-  historyEls.modal.hidden = false;
+  historyEls.modal.classList.add('active');
   historyEls.modalVideo.play();
 }
 
-historyEls.modalClose.addEventListener('click', () => {
-  historyEls.modal.hidden = true;
+function closeHistoryModal() {
+  historyEls.modal.classList.remove('active');
   historyEls.modalVideo.pause();
-  historyEls.modalVideo.src = '';
+  historyEls.modalVideo.removeAttribute('src');
+  historyEls.modalVideo.load();
+}
+
+historyEls.modalClose.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  closeHistoryModal();
 });
 
 historyEls.modal.addEventListener('click', (e) => {
   if (e.target === historyEls.modal) {
-    historyEls.modal.hidden = true;
-    historyEls.modalVideo.pause();
-    historyEls.modalVideo.src = '';
+    closeHistoryModal();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && historyEls.modal.classList.contains('active')) {
+    closeHistoryModal();
   }
 });
 
