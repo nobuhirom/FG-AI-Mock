@@ -5,9 +5,43 @@
 const ELEVENLABS_BASE = 'https://api.elevenlabs.io/v1';
 const DID_BASE = 'https://api.d-id.com';
 
+function didHeaders(contentType) {
+  const h = { Authorization: `Basic ${process.env.DID_API_KEY}` };
+  if (contentType) h['Content-Type'] = contentType;
+  return h;
+}
+
+// -----------------------------------------------------------------------------
+// プリメイドボイス一覧取得
+// -----------------------------------------------------------------------------
+export async function listVoices() {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey) throw new Error('ELEVENLABS_API_KEY が設定されていません');
+
+  const response = await fetch(`${ELEVENLABS_BASE}/voices`, {
+    headers: { 'xi-api-key': apiKey },
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`ElevenLabs voices list failed: ${response.status} ${err}`);
+  }
+
+  const data = await response.json();
+
+  return data.voices.map((v) => ({
+    voiceId: v.voice_id,
+    name: v.name,
+    category: v.category,
+    gender: v.labels?.gender || '',
+    age: v.labels?.age || '',
+    accent: v.labels?.accent || '',
+    previewUrl: v.preview_url || null,
+  }));
+}
+
 // -----------------------------------------------------------------------------
 // Step 1: 人物登録 — ElevenLabs で音声クローン作成
-// POST /v1/voices/add
 // -----------------------------------------------------------------------------
 export async function registerPerson({ name, photo, audio }) {
   const apiKey = process.env.ELEVENLABS_API_KEY;
@@ -34,14 +68,12 @@ export async function registerPerson({ name, photo, audio }) {
   return {
     voiceId: data.voice_id,
     name,
-    // 写真は Base64 で返す（フロントエンドで表示用 + D-ID 送信用に保持）
     photoBase64: `data:${photo.mimetype};base64,${photo.buffer.toString('base64')}`,
   };
 }
 
 // -----------------------------------------------------------------------------
-// Step 2: 音声生成 — ElevenLabs TTS（クローン音声でテキスト読み上げ）
-// POST /v1/text-to-speech/{voice_id}
+// Step 2: 音声生成 — ElevenLabs TTS
 // -----------------------------------------------------------------------------
 export async function generateSpeech({ voiceId, text }) {
   const apiKey = process.env.ELEVENLABS_API_KEY;
@@ -74,21 +106,72 @@ export async function generateSpeech({ voiceId, text }) {
 }
 
 // -----------------------------------------------------------------------------
-// Step 3: 動画生成 — D-ID Talks API（写真 + 音声 → 動画）
-// POST /talks
+// D-ID: 画像アップロード
+// POST /images
 // -----------------------------------------------------------------------------
-export async function generateVideo({ photoUrl, audioUrl }) {
+export async function uploadImageToDID(photoBuffer, mimetype) {
+  const apiKey = process.env.DID_API_KEY;
+  if (!apiKey) throw new Error('DID_API_KEY が設定されていません');
+
+  const formData = new FormData();
+  const ext = mimetype === 'image/png' ? 'png' : 'jpg';
+  formData.append('image', new Blob([photoBuffer], { type: mimetype }), `photo.${ext}`);
+
+  const response = await fetch(`${DID_BASE}/images`, {
+    method: 'POST',
+    headers: { Authorization: `Basic ${apiKey}` },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`D-ID image upload failed: ${response.status} ${err}`);
+  }
+
+  const data = await response.json();
+  console.log('[D-ID image upload]', data);
+  return data.url;
+}
+
+// -----------------------------------------------------------------------------
+// D-ID: 音声アップロード
+// POST /audios
+// -----------------------------------------------------------------------------
+export async function uploadAudioToDID(audioBuffer) {
+  const apiKey = process.env.DID_API_KEY;
+  if (!apiKey) throw new Error('DID_API_KEY が設定されていません');
+
+  const formData = new FormData();
+  formData.append('audio', new Blob([audioBuffer], { type: 'audio/mpeg' }), 'speech.mp3');
+
+  const response = await fetch(`${DID_BASE}/audios`, {
+    method: 'POST',
+    headers: { Authorization: `Basic ${apiKey}` },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`D-ID audio upload failed: ${response.status} ${err}`);
+  }
+
+  const data = await response.json();
+  console.log('[D-ID audio upload]', data);
+  return data.url;
+}
+
+// -----------------------------------------------------------------------------
+// Step 3: 動画生成 — D-ID Talks API
+// -----------------------------------------------------------------------------
+export async function generateVideo({ imageUrl, audioUrl }) {
   const apiKey = process.env.DID_API_KEY;
   if (!apiKey) throw new Error('DID_API_KEY が設定されていません');
 
   const response = await fetch(`${DID_BASE}/talks`, {
     method: 'POST',
-    headers: {
-      Authorization: `Basic ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: didHeaders('application/json'),
     body: JSON.stringify({
-      source_url: photoUrl,
+      source_url: imageUrl,
       script: {
         type: 'audio',
         audio_url: audioUrl,
@@ -102,6 +185,7 @@ export async function generateVideo({ photoUrl, audioUrl }) {
   }
 
   const data = await response.json();
+  console.log('[D-ID talk created]', data);
 
   return {
     talkId: data.id,
@@ -110,8 +194,7 @@ export async function generateVideo({ photoUrl, audioUrl }) {
 }
 
 // -----------------------------------------------------------------------------
-// Step 3b: 動画ステータス確認 — D-ID（ポーリング用）
-// GET /talks/{id}
+// Step 3b: 動画ステータス確認
 // -----------------------------------------------------------------------------
 export async function getVideoStatus(talkId) {
   const apiKey = process.env.DID_API_KEY;
@@ -119,9 +202,7 @@ export async function getVideoStatus(talkId) {
 
   const response = await fetch(`${DID_BASE}/talks/${talkId}`, {
     method: 'GET',
-    headers: {
-      Authorization: `Basic ${apiKey}`,
-    },
+    headers: didHeaders(),
   });
 
   if (!response.ok) {

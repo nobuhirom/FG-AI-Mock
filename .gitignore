@@ -23,3 +23,6 @@ build/
 
 # Uploaded files (temp)
 uploads/
+
+# 履歴データ（生成動画・サムネイル）
+server/history/
